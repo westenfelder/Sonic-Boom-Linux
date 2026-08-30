@@ -1,13 +1,20 @@
 # Sonic-Boom-Linux
-Sonic Boom AVD with CAC passthrough on Linux  
-**Note:** This process has only been tested on Ubuntu 22.04 x86_64
+Microsoft AVD with CAC passthrough on Linux  
 
 ## Background
-Currently, Microsoft does not provide an official Linux client to connect to Azure Virtual Desktop (AVD). Linux users must use the AVD web client, which does [not support](https://usaf.dps.mil/sites/SBVP/SitePages/AVD---FAQs.aspx) Common Access Card (CAC) passthrough. Lack of CAC passthrough prevents authenticating to websites and signing documents. This project aims to fix these problems.
+As of August 2026, Microsoft does not provide an official Linux client to connect to Azure Virtual Desktop (AVD). Linux users must use the AVD web client, which does [not support](https://usaf.dps.mil/sites/SBVP/SitePages/AVD---FAQs.aspx) Common Access Card (CAC) passthrough. Lack of CAC passthrough prevents authenticating to websites and signing documents. This project aims to fix these problems.
 
 CAC passthrough is officially supported using the [Windows App](https://apps.microsoft.com/detail/9n1f85v9t8bn?hl=en-US&gl=US) on Windows operating systems.
 
-## Instructions
+## Notes
+- The Air Force's Enterprise IT as a Service Virtual Desktop Infrastructure (EITaaS VDI) replaced Sonic Boom in April 2026. This project supports the EITaaS VDI and may work for other VDIs powered by Azure Virtual Desktop.
+- Running the official Windows App inside a virtual machine or container (such as [winboat](https://github.com/winboat-org/winboat)) may be a simpler solution for some users. This project avoids the overhead of virtualization.
+- This project provides a simple connection script and manual connection instructions. For a more mature package, please see [EITaaS-Linux](https://github.com/sjtrotter/EITaaS-Linux).
+
+## Connection Script Instructions
+1. TODO
+
+## Manual Connection Instructions
 1. Visit [https://rdweb.wvd.azure.us/arm/webclient](https://rdweb.wvd.azure.us/arm/webclient)
     - Click the settings cog and select "Download the rdp file"
     - Click "Desktop" to download the `Desktop.rdpw` file
@@ -71,9 +78,9 @@ CAC passthrough is officially supported using the [Windows App](https://apps.mic
         +clipboard
     ```
 
-5. Authenticate and capture redirection URLs
+5. Authenticate and capture the OAuth authorization code
     - Copy the authentication link(s) from xfreerdp3
-    - Open Dev Tools -> Network Tab -> Click "Keep log" -> Start recording
+    - Open Dev Tools in browser -> Network Tab -> Click "Keep log" -> Start recording
     - Paste the link and authenticate
     - Find "nativeclient?code=..." -> Right click -> Copy -> Copy URL
     - Paste the redirection URL back into xfreerdp3
@@ -82,11 +89,3 @@ CAC passthrough is officially supported using the [Windows App](https://apps.mic
 6. Test CAC passthrough
    - In the RDP session, attempt CAC authentication on a website (such as [LeaveWeb](https://leave.af.mil/login/1))
 
-## Todo
-- Script this process for ease of use
-- Test on non-Debian distros
-
-## Alternative Methods
-- [winboat](https://github.com/winboat-org/winboat)
-- [windows-app-linux](https://github.com/imamAtif/windows-app-linux) (does NOT support CAC passthrough)
-- [windows-app-for-linux](https://github.com/mariuszkopowski/windows-app-for-linux) (does NOT support CAC passthrough)
