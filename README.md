@@ -2,19 +2,16 @@
 Microsoft AVD with CAC passthrough on Linux  
 
 ## Background
-As of August 2026, Microsoft does not provide an official Linux client to connect to Azure Virtual Desktop (AVD). Linux users must use the AVD web client, which does [not support](https://usaf.dps.mil/sites/SBVP/SitePages/AVD---FAQs.aspx) Common Access Card (CAC) passthrough. Lack of CAC passthrough prevents authenticating to websites and signing documents. This project aims to fix these problems.
+As of August 2026, Microsoft does not provide an official Linux client to connect to Azure Virtual Desktop (AVD). Linux users must use the AVD web client, which does [not support](https://usaf.dps.mil/sites/SBVP/SitePages/AVD---FAQs.aspx) Common Access Card (CAC) passthrough. Lack of CAC passthrough prevents authenticating to websites and signing documents. This repo provides instructions to resolve these issues.
 
 CAC passthrough is officially supported using the [Windows App](https://apps.microsoft.com/detail/9n1f85v9t8bn?hl=en-US&gl=US) on Windows operating systems.
 
 ## Notes
-- The Air Force's Enterprise IT as a Service Virtual Desktop Infrastructure (EITaaS VDI) replaced Sonic Boom in April 2026. This project supports the EITaaS VDI and may work for other VDIs powered by Azure Virtual Desktop.
-- Running the official Windows App inside a virtual machine or container (such as [winboat](https://github.com/winboat-org/winboat)) may be a simpler solution for some users. This project avoids the overhead of virtualization.
-- This project provides a simple connection script and manual connection instructions. For a more mature package, please see [EITaaS-Linux](https://github.com/sjtrotter/EITaaS-Linux).
+- The Air Force's Enterprise IT as a Service Virtual Desktop Infrastructure (EITaaS VDI) replaced Sonic Boom in April 2026. These instructions support the EITaaS VDI and may work for other remote desktops powered by AVD.
+- Running the official Windows App inside a virtual machine or container (such as [winboat](https://github.com/winboat-org/winboat)) may be a simpler solution for some users. These instructions avoid the overhead of virtualization.
+- This repo only provides manual connection instructions and has only been tested on Ubuntu 24.04 x86_64. For a more mature project, please see [EITaaS-Linux](https://github.com/sjtrotter/EITaaS-Linux).
 
-## Connection Script Instructions
-1. TODO
-
-## Manual Connection Instructions
+## Instructions
 1. Visit [https://rdweb.wvd.azure.us/arm/webclient](https://rdweb.wvd.azure.us/arm/webclient)
     - Click the settings cog and select "Download the rdp file"
     - Click "Desktop" to download the `Desktop.rdpw` file
@@ -22,13 +19,7 @@ CAC passthrough is officially supported using the [Windows App](https://apps.mic
 2. Install dependencies
 
     ```bash
-    sudo apt update && sudo apt install -y \
-        freerdp3-x11 \
-        pcscd \
-        pcsc-tools \
-        libccid \
-        opensc \
-        libpcsclite1
+    sudo apt update && sudo apt install -y freerdp3-x11 pcscd pcsc-tools libccid opensc libpcsclite1
     ```
 
 3. Check smart card reader and CAC
@@ -74,8 +65,7 @@ CAC passthrough is officially supported using the [Windows App](https://apps.mic
         /sec:aad \
         /azure:ad:login.microsoftonline.us,tenantid:common,avd-access:https://login.microsoftonline.com/common/oauth2/nativeclient \
         /cert:ignore \
-        /smartcard \
-        +clipboard
+        /smartcard
     ```
 
 5. Authenticate and capture the OAuth authorization code
