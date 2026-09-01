@@ -12,22 +12,32 @@ CAC passthrough is officially supported using the [Windows App](https://apps.mic
 - This repo only provides manual connection instructions and has only been tested on Ubuntu 24.04 x86_64. For a more mature project, please see [EITaaS-Linux](https://github.com/sjtrotter/EITaaS-Linux).
 
 ## Instructions
-1. Visit [https://rdweb.wvd.azure.us/arm/webclient](https://rdweb.wvd.azure.us/arm/webclient)
+1. Install dependencies
+
+    ```bash
+    sudo apt update && sudo apt install -y freerdp3-x11 pcscd pcsc-tools libccid opensc libpcsclite1 opensc-pkcs11 libnss3-tools
+    ```
+
+2. Configure the Network Security Services (NSS) database
+
+    ```bash
+    mkdir -p ~/.pki/nssdb
+    chmod 700 ~/.pki/nssdb
+    modutil -dbdir sql:$HOME/.pki/nssdb/ -add "OpenSC" -libfile /usr/lib/x86_64-linux-gnu/opensc-pkcs11.so
+    modutil -dbdir sql:$HOME/.pki/nssdb/ -list
+    sudo systemctl enable --now pcscd
+    ```
+
+3. Visit [https://rdweb.wvd.azure.us/arm/webclient](https://rdweb.wvd.azure.us/arm/webclient)
     - Click the settings cog and select "Download the rdp file"
     - Click "Desktop" to download the `Desktop.rdpw` file
 
-2. Install dependencies
-
-    ```bash
-    sudo apt update && sudo apt install -y freerdp3-x11 pcscd pcsc-tools libccid opensc libpcsclite1
-    ```
-
-3. Check smart card reader and CAC
+4. Check smart card reader and CAC
     - Ensure the following commands run without root permissions (do NOT use sudo)
 
     ```bash
     pcsc_scan -c
-    pkcs11-tool --test --login
+    pkcs11-tool --list-slots
     ```
 
     - If either command fails, you may need to modify pcsc permissions
@@ -60,12 +70,7 @@ CAC passthrough is officially supported using the [Windows App](https://apps.mic
 4. Launch connection
 
     ```bash
-    xfreerdp3 Desktop.rdpw \
-        /gateway:type:arm \
-        /sec:aad \
-        /azure:ad:login.microsoftonline.us,tenantid:common,avd-access:https://login.microsoftonline.com/common/oauth2/nativeclient \
-        /cert:ignore \
-        /smartcard
+    xfreerdp3 Desktop.rdpw /gateway:type:arm /sec:aad /azure:ad:login.microsoftonline.us,tenantid:common,avd-access:https://login.microsoftonline.com/common/oauth2/nativeclient /cert:ignore /timeout:60000 /smartcard
     ```
 
 5. Authenticate and capture the OAuth authorization code
