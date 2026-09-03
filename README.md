@@ -7,7 +7,7 @@ As of August 2026, Microsoft does not provide an official Linux client to connec
 CAC passthrough is officially supported using the [Windows App](https://apps.microsoft.com/detail/9n1f85v9t8bn?hl=en-US&gl=US) on Windows operating systems.
 
 ## Notes
-- The Air Force's Enterprise IT as a Service Virtual Desktop Infrastructure (EITaas VDI) replaced Sonic Boom in April 2026. These instructions **support EITaaS VDI** and may work for other remote desktops powered by AVD.
+- The Air Force's Enterprise IT as a Service Virtual Desktop Infrastructure (EITaaS VDI) replaced Sonic Boom in April 2026. These instructions **support EITaaS VDI** and may work for other remote desktops powered by AVD.
 - Running the official Windows App inside a virtual machine or container (such as [winboat](https://github.com/winboat-org/winboat)) may be a simpler solution for some users. These instructions avoid the overhead of virtualization.
 - This repo only provides manual connection instructions and has only been tested on Ubuntu 24.04 x86_64. For a more mature project, please see [EITaaS-Linux](https://github.com/sjtrotter/EITaaS-Linux).
 
