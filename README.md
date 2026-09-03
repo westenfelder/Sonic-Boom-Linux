@@ -7,9 +7,12 @@ As of August 2026, Microsoft does not provide an official Linux client to connec
 CAC passthrough is officially supported using the [Windows App](https://apps.microsoft.com/detail/9n1f85v9t8bn?hl=en-US&gl=US) on Windows operating systems.
 
 ## Notes
-- The Air Force's Enterprise IT as a Service Virtual Desktop Infrastructure ([EITaas VDI](#what-is-eitaas-vdi)) replaced Sonic Boom in April 2026. These instructions support the EITaaS VDI and may work for other remote desktops powered by AVD.
+- The Air Force's Enterprise IT as a Service Virtual Desktop Infrastructure (EITaas VDI) replaced Sonic Boom in April 2026. These instructions **support EITaaS VDI** and may work for other remote desktops powered by AVD.
 - Running the official Windows App inside a virtual machine or container (such as [winboat](https://github.com/winboat-org/winboat)) may be a simpler solution for some users. These instructions avoid the overhead of virtualization.
 - This repo only provides manual connection instructions and has only been tested on Ubuntu 24.04 x86_64. For a more mature project, please see [EITaaS-Linux](https://github.com/sjtrotter/EITaaS-Linux).
+
+## What is EITaaS VDI?
+EITaaS VDI is the Department of Air Force (DAF) enterprise VDI service that is hosted in the Azure Government Cloud and is aligned to the Air Force Network (AFNET) security requirements and compliance. It provides connection directly to the AFNET, enabling secure access to virtual workspaces, applications, and resources without needing to use Government Furnished Equipment (GFE).
 
 ## Instructions
 1. Install dependencies
@@ -26,33 +29,32 @@ CAC passthrough is officially supported using the [Windows App](https://apps.mic
     pkcs11-tool --list-slots
     ```
 
-        - If either command fails, you may need to modify pcsc permissions
-    
-        ```bash
-        sudo mkdir -p /etc/polkit-1/localauthority/50-local.d/
-        sudo mkdir -p /etc/polkit-1/rules.d/
-        
-        sudo tee /etc/polkit-1/localauthority/50-local.d/99-pcscd.pkla > /dev/null <<EOF
-        [Allow pcscd access for all users]
-        Identity=unix-user:*
-        Action=org.debian.pcsc-lite.access_pcsc;org.debian.pcsc-lite.access_card;org.pcsc-lite.access_pcsc;org.pcsc-lite.access_card
-        ResultAny=yes
-        ResultInactive=yes
-        ResultActive=yes
-        EOF
-        
-        sudo tee /etc/polkit-1/rules.d/99-pcscd.rules > /dev/null <<EOF
-        polkit.addRule(function(action, subject) {
-            if (action.id.indexOf("pcsc-lite.access_pcsc") > -1 || action.id.indexOf("pcsc-lite.access_card") > -1) {
-                return polkit.Result.YES;
-            }
-        });
-        EOF
-        
-        sudo systemctl restart polkit
-        sudo systemctl restart pcscd
-        ```
+    - If either command fails, you may need to modify pcsc permissions
 
+    ```bash
+    sudo mkdir -p /etc/polkit-1/localauthority/50-local.d/
+    sudo mkdir -p /etc/polkit-1/rules.d/
+    
+    sudo tee /etc/polkit-1/localauthority/50-local.d/99-pcscd.pkla > /dev/null <<EOF
+    [Allow pcscd access for all users]
+    Identity=unix-user:*
+    Action=org.debian.pcsc-lite.access_pcsc;org.debian.pcsc-lite.access_card;org.pcsc-lite.access_pcsc;org.pcsc-lite.access_card
+    ResultAny=yes
+    ResultInactive=yes
+    ResultActive=yes
+    EOF
+    
+    sudo tee /etc/polkit-1/rules.d/99-pcscd.rules > /dev/null <<EOF
+    polkit.addRule(function(action, subject) {
+        if (action.id.indexOf("pcsc-lite.access_pcsc") > -1 || action.id.indexOf("pcsc-lite.access_card") > -1) {
+            return polkit.Result.YES;
+        }
+    });
+    EOF
+    
+    sudo systemctl restart polkit
+    sudo systemctl restart pcscd
+    ```
 
 3. Configure the Network Security Services (NSS) database
 
@@ -89,8 +91,5 @@ CAC passthrough is officially supported using the [Windows App](https://apps.mic
    - In the RDP session, attempt CAC authentication on a website (such as [LeaveWeb](https://leave.af.mil/login/1))
 
 8. Close session
-    - Use ctrl-alt-enter to minimize the window
-
-## What is EITaaS VDI?   
-EITaaS VDI is the Department of Air Force (DAF) enterprise VDI service that is hosted in the Azure Government Cloud and is aligned to the Air Force Network (AFNET) security requirements and compliance. It provides connection directly to the AFNET, enabling secure access to virtual workspaces, applications, and resources without needing to use Government Furnished Equipment (GFE).
+    - Use `ctrl-alt-enter` to minimize the window
 
